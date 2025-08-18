@@ -1,0 +1,138 @@
+<!--pages/accounting/accounting.wxml-->
+<view class="container">
+  <!-- 时间筛选 -->
+  <view class="filter-tabs">
+    <button class="filter-tab {{activeFilter === 'today' ? 'active' : ''}}" 
+            bindtap="switchFilter" data-filter="today">今日</button>
+    <button class="filter-tab {{activeFilter === 'month' ? 'active' : ''}}" 
+            bindtap="switchFilter" data-filter="month">本月</button>
+    <button class="filter-tab {{activeFilter === 'year' ? 'active' : ''}}" 
+            bindtap="switchFilter" data-filter="year">本年</button>
+  </view>
+
+  <!-- 统计概览 -->
+  <view class="summary-overview card">
+    <view class="overview-item">
+      <view class="overview-label">总收入</view>
+      <view class="overview-amount income">¥{{totalIncome}}</view>
+    </view>
+    <view class="overview-divider"></view>
+    <view class="overview-item">
+      <view class="overview-label">总支出</view>
+      <view class="overview-amount expense">¥{{totalExpense}}</view>
+    </view>
+    <view class="overview-divider"></view>
+    <view class="overview-item">
+      <view class="overview-label">净收入</view>
+      <view class="overview-amount {{netIncome >= 0 ? 'income' : 'expense'}}">¥{{netIncome}}</view>
+    </view>
+  </view>
+
+  <!-- 图表展示 -->
+  <view class="chart-container card">
+    <view class="chart-header">
+      <view class="chart-title">📊 支出分析</view>
+      <view class="chart-subtitle">{{filterText}}支出 ¥{{totalExpense}} · {{topCategory}}占比最高</view>
+    </view>
+    <view class="chart-placeholder">
+      <view class="chart-circle">
+        <view class="chart-center">
+          <view class="chart-amount">¥{{totalExpense}}</view>
+          <view class="chart-label">总支出</view>
+        </view>
+      </view>
+    </view>
+    <view class="chart-legend">
+      <view class="legend-item" wx:for="{{categoryStats}}" wx:key="category">
+        <view class="legend-color" style="background: {{item.color}};"></view>
+        <view class="legend-text">{{item.name}} {{item.percentage}}%</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 交易记录列表 -->
+  <view class="transaction-list card" wx:if="{{transactions.length > 0}}">
+    <view class="list-header">
+      <view class="list-title">📝 交易记录</view>
+      <view class="list-count">共 {{transactions.length}} 笔</view>
+    </view>
+    
+    <view class="transaction-group" wx:for="{{groupedTransactions}}" wx:key="date">
+      <view class="group-date">{{item.date}}</view>
+      <view class="group-transactions">
+        <view class="transaction-item" wx:for="{{item.transactions}}" wx:key="id" wx:for-item="transaction">
+          <view class="transaction-info">
+            <view class="transaction-icon {{transaction.category}}">{{transaction.icon}}</view>
+            <view class="transaction-details">
+              <view class="transaction-title">{{transaction.title || transaction.categoryName}}</view>
+              <view class="transaction-meta">
+                <text>{{transaction.time}}</text>
+                <text wx:if="{{transaction.note}}"> · {{transaction.note}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="transaction-amount {{transaction.type === 'income' ? 'amount-income' : 'amount-expense'}}">
+            {{transaction.type === 'income' ? '+' : '-'}}¥{{transaction.amount}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{transactions.length === 0}}">
+    <view class="empty-icon">📊</view>
+    <view class="empty-title">暂无交易记录</view>
+    <view class="empty-subtitle">点击右下角按钮开始记账吧</view>
+  </view>
+</view>
+
+<!-- 添加记录按钮 -->
+<view class="add-btn" bindtap="openTransactionModal">
+  <text>+</text>
+</view>
+
+<!-- 添加交易弹窗 -->
+<view class="modal" wx:if="{{showModal}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{modalType === 'income' ? '✨ 添加收入' : '🛒 添加支出'}}</view>
+      <button class="close-btn" bindtap="closeModal">✕</button>
+    </view>
+    
+    <!-- 类型切换 -->
+    <view class="type-tabs">
+      <button class="type-tab {{modalType === 'expense' ? 'active' : ''}}" 
+              bindtap="switchModalType" data-type="expense">支出</button>
+      <button class="type-tab {{modalType === 'income' ? 'active' : ''}}" 
+              bindtap="switchModalType" data-type="income">收入</button>
+    </view>
+    
+    <form bindsubmit="submitTransaction">
+      <view class="form-group">
+        <view class="form-label">💰 金额</view>
+        <input class="form-input" type="digit" placeholder="请输入金额" name="amount" 
+               value="{{formData.amount}}" bindinput="onAmountInput" />
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">🏷️ 分类</view>
+        <view class="category-grid grid grid-4">
+          <view class="category-item {{selectedCategory === item.value ? 'selected' : ''}}" 
+                wx:for="{{categories}}" wx:key="value"
+                bindtap="selectCategory" data-value="{{item.value}}">
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">📝 备注</view>
+        <input class="form-input" placeholder="添加备注信息（可选）" name="note" 
+               value="{{formData.note}}" bindinput="onNoteInput" />
+      </view>
+      
+      <button class="submit-btn btn-primary" form-type="submit">确认添加</button>
+    </form>
+  </view>
+</view>

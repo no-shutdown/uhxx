@@ -1,0 +1,183 @@
+<!--pages/more/more.wxml-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card card">
+    <view class="user-avatar">
+      <image src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" class="avatar-img" />
+    </view>
+    <view class="user-info">
+      <view class="user-name">{{userInfo.nickName || '薄荷用户'}}</view>
+      <view class="user-desc">让生活更精致，让每一天都充满活力</view>
+    </view>
+    <view class="user-action">
+      <button class="edit-btn" bindtap="editProfile">编辑</button>
+    </view>
+  </view>
+
+  <!-- 功能中心 -->
+  <view class="section">
+    <view class="section-title">🚀 功能中心</view>
+    <view class="module-grid grid grid-2">
+      <view class="module-card" bindtap="navigateToAccounting">
+        <view class="module-icon income-icon">💰</view>
+        <view class="module-title">智能记账</view>
+        <view class="module-desc">轻松管理收支</view>
+      </view>
+      <view class="module-card" bindtap="navigateToPeriod">
+        <view class="module-icon period-icon">🌸</view>
+        <view class="module-title">健康周期</view>
+        <view class="module-desc">精准预测记录</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 即将发布 -->
+  <view class="section">
+    <view class="section-title">✨ 即将发布</view>
+    <view class="module-grid grid grid-2">
+      <view class="module-card coming-soon">
+        <view class="coming-soon-badge">敬请期待</view>
+        <view class="module-icon health-icon">💊</view>
+        <view class="module-title">健康管家</view>
+        <view class="module-desc">体重运动全记录</view>
+      </view>
+      <view class="module-card coming-soon">
+        <view class="coming-soon-badge">敬请期待</view>
+        <view class="module-icon mood-icon">📝</view>
+        <view class="module-title">心情笔记</view>
+        <view class="module-desc">情绪智能分析</view>
+      </view>
+      <view class="module-card coming-soon">
+        <view class="coming-soon-badge">敬请期待</view>
+        <view class="module-icon beauty-icon">💄</view>
+        <view class="module-title">美容日记</view>
+        <view class="module-desc">护肤品智能管理</view>
+      </view>
+      <view class="module-card coming-soon">
+        <view class="coming-soon-badge">敬请期待</view>
+        <view class="module-icon nutrition-icon">🥗</view>
+        <view class="module-title">营养助手</view>
+        <view class="module-desc">健康饮食指导</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section card">
+    <view class="stats-title">📊 我的数据</view>
+    <view class="stats-list">
+      <view class="stats-item" bindtap="viewTransactionStats">
+        <view class="stats-icon">💰</view>
+        <view class="stats-content">
+          <view class="stats-name">交易记录</view>
+          <view class="stats-value">{{transactionCount}} 笔</view>
+        </view>
+        <view class="stats-arrow">→</view>
+      </view>
+      <view class="stats-item" bindtap="viewPeriodStats">
+        <view class="stats-icon">🌸</view>
+        <view class="stats-content">
+          <view class="stats-name">经期记录</view>
+          <view class="stats-value">{{periodCount}} 次</view>
+        </view>
+        <view class="stats-arrow">→</view>
+      </view>
+      <view class="stats-item" bindtap="viewUsageStats">
+        <view class="stats-icon">📱</view>
+        <view class="stats-content">
+          <view class="stats-name">使用天数</view>
+          <view class="stats-value">{{usageDays}} 天</view>
+        </view>
+        <view class="stats-arrow">→</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置选项 -->
+  <view class="settings-section">
+    <view class="section-title">⚙️ 设置</view>
+    <view class="settings-list card">
+      <view class="setting-item" bindtap="openNotificationSettings">
+        <view class="setting-icon">🔔</view>
+        <view class="setting-content">
+          <view class="setting-name">通知设置</view>
+          <view class="setting-desc">经期提醒、记账提醒</view>
+        </view>
+        <view class="setting-arrow">→</view>
+      </view>
+      <view class="setting-item" bindtap="openPrivacySettings">
+        <view class="setting-icon">🔒</view>
+        <view class="setting-content">
+          <view class="setting-name">隐私设置</view>
+          <view class="setting-desc">数据安全、隐私保护</view>
+        </view>
+        <view class="setting-arrow">→</view>
+      </view>
+      <view class="setting-item" bindtap="openDataManagement">
+        <view class="setting-icon">💾</view>
+        <view class="setting-content">
+          <view class="setting-name">数据管理</view>
+          <view class="setting-desc">备份、导出、清理</view>
+        </view>
+        <view class="setting-arrow">→</view>
+      </view>
+      <view class="setting-item" bindtap="openAbout">
+        <view class="setting-icon">ℹ️</view>
+        <view class="setting-content">
+          <view class="setting-name">关于我们</view>
+          <view class="setting-desc">版本信息、用户协议</view>
+        </view>
+        <view class="setting-arrow">→</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈建议 -->
+  <view class="feedback-section">
+    <button class="feedback-btn" bindtap="openFeedback">
+      <text class="feedback-icon">💌</text>
+      <text>意见反馈</text>
+    </button>
+  </view>
+</view>
+
+<!-- 编辑资料弹窗 -->
+<view class="modal" wx:if="{{showProfileModal}}" bindtap="closeProfileModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">✏️ 编辑资料</view>
+      <button class="close-btn" bindtap="closeProfileModal">×</button>
+    </view>
+    
+    <form bindsubmit="submitProfile">
+      <view class="form-group">
+        <view class="form-label">头像</view>
+        <view class="avatar-upload" bindtap="chooseAvatar">
+          <image src="{{profileForm.avatarUrl || '/images/default-avatar.png'}}" class="upload-avatar" />
+          <view class="upload-text">点击更换</view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">昵称</view>
+        <input class="form-input" placeholder="请输入昵称" name="nickName" 
+               value="{{profileForm.nickName}}" bindinput="onNickNameInput" />
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">生日</view>
+        <picker mode="date" value="{{profileForm.birthday}}" bindchange="onBirthdayChange">
+          <view class="form-input picker-input">{{profileForm.birthday || '请选择生日'}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">个性签名</view>
+        <textarea class="form-textarea" placeholder="写下你的个性签名..." 
+                  value="{{profileForm.signature}}" bindinput="onSignatureInput"></textarea>
+      </view>
+      
+      <button class="submit-btn btn-primary" form-type="submit">保存修改</button>
+    </form>
+  </view>
+</view>

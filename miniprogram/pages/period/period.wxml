@@ -1,0 +1,197 @@
+<!--pages/period/period.wxml-->
+<view class="container">
+  <!-- 日历容器 -->
+  <view class="calendar-container card">
+    <view class="calendar-header">
+      <button class="calendar-nav" bindtap="prevMonth">‹</button>
+      <view class="calendar-title">{{currentYear}}年{{currentMonth}}月</view>
+      <button class="calendar-nav" bindtap="nextMonth">›</button>
+    </view>
+    
+    <view class="calendar-grid">
+      <!-- 星期标题 -->
+      <view class="calendar-weekday" wx:for="{{weekdays}}" wx:key="*this">{{item}}</view>
+      
+      <!-- 日期 -->
+      <view class="calendar-day {{item.class}}" 
+            wx:for="{{calendarDays}}" wx:key="date"
+            bindtap="selectDate" data-date="{{item.date}}">
+        {{item.day}}
+      </view>
+    </view>
+    
+    <!-- 图例说明 -->
+    <view class="calendar-legend">
+      <view class="legend-item">
+        <view class="legend-dot period"></view>
+        <text>经期</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot ovulation"></view>
+        <text>排卵期</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot predicted"></view>
+        <text>预测</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot today"></view>
+        <text>今天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 健康统计 -->
+  <view class="period-stats card">
+    <view class="stats-header">
+      <view class="stats-title">📊 健康统计</view>
+      <view class="stats-subtitle">基于智能算法的个性化分析</view>
+    </view>
+    
+    <view class="stats-grid grid grid-2">
+      <view class="stat-item">
+        <view class="stat-number">{{averageCycle}}</view>
+        <view class="stat-label">平均周期（天）</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{averagePeriod}}</view>
+        <view class="stat-label">平均经期（天）</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{daysToNext}}</view>
+        <view class="stat-label">距下次经期</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{accuracy}}%</view>
+        <view class="stat-label">预测准确率</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 周期信息 -->
+  <view class="cycle-info card">
+    <view class="info-title">🌸 周期信息</view>
+    <view class="info-content">
+      <view class="info-item">
+        <view class="info-label">上次经期</view>
+        <view class="info-value">{{lastPeriodText}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">下次预测</view>
+        <view class="info-value">{{nextPeriodText}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">排卵期</view>
+        <view class="info-value">{{ovulationText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记录按钮 -->
+  <view class="record-buttons">
+    <button class="record-btn period-btn" bindtap="recordPeriod">
+      <text class="btn-icon">🌸</text>
+      <text>记录经期</text>
+    </button>
+    <button class="record-btn symptom-btn" bindtap="recordSymptom">
+      <text class="btn-icon">📝</text>
+      <text>记录症状</text>
+    </button>
+  </view>
+</view>
+
+<!-- 记录经期弹窗 -->
+<view class="modal" wx:if="{{showPeriodModal}}" bindtap="closePeriodModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">🌸 记录经期</view>
+      <button class="close-btn" bindtap="closePeriodModal">×</button>
+    </view>
+    
+    <form bindsubmit="submitPeriodRecord">
+      <view class="form-group">
+        <view class="form-label">📅 开始日期</view>
+        <picker mode="date" value="{{periodForm.startDate}}" bindchange="onStartDateChange">
+          <view class="form-input picker-input">{{periodForm.startDate || '请选择开始日期'}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">📅 结束日期</view>
+        <picker mode="date" value="{{periodForm.endDate}}" bindchange="onEndDateChange">
+          <view class="form-input picker-input">{{periodForm.endDate || '请选择结束日期'}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">💧 流量</view>
+        <view class="flow-options">
+          <view class="flow-option {{periodForm.flow === item.value ? 'selected' : ''}}"
+                wx:for="{{flowOptions}}" wx:key="value"
+                bindtap="selectFlow" data-value="{{item.value}}">
+            <text class="flow-icon">{{item.icon}}</text>
+            <text class="flow-text">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">📝 备注</view>
+        <textarea class="form-textarea" placeholder="记录症状、心情等（可选）" 
+                  value="{{periodForm.note}}" bindinput="onPeriodNoteInput"></textarea>
+      </view>
+      
+      <button class="submit-btn btn-primary" form-type="submit">确认记录</button>
+    </form>
+  </view>
+</view>
+
+<!-- 记录症状弹窗 -->
+<view class="modal" wx:if="{{showSymptomModal}}" bindtap="closeSymptomModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">📝 记录症状</view>
+      <button class="close-btn" bindtap="closeSymptomModal">×</button>
+    </view>
+    
+    <form bindsubmit="submitSymptomRecord">
+      <view class="form-group">
+        <view class="form-label">📅 日期</view>
+        <picker mode="date" value="{{symptomForm.date}}" bindchange="onSymptomDateChange">
+          <view class="form-input picker-input">{{symptomForm.date || '请选择日期'}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">😊 心情</view>
+        <view class="mood-options">
+          <view class="mood-option {{symptomForm.mood === item.value ? 'selected' : ''}}"
+                wx:for="{{moodOptions}}" wx:key="value"
+                bindtap="selectMood" data-value="{{item.value}}">
+            {{item.icon}}
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">🩺 症状</view>
+        <view class="symptom-grid">
+          <view class="symptom-item {{symptomForm.symptoms.includes(item.value) ? 'selected' : ''}}"
+                wx:for="{{symptomOptions}}" wx:key="value"
+                bindtap="toggleSymptom" data-value="{{item.value}}">
+            <text class="symptom-icon">{{item.icon}}</text>
+            <text class="symptom-text">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">📝 备注</view>
+        <textarea class="form-textarea" placeholder="其他症状或备注（可选）" 
+                  value="{{symptomForm.note}}" bindinput="onSymptomNoteInput"></textarea>
+      </view>
+      
+      <button class="submit-btn btn-primary" form-type="submit">确认记录</button>
+    </form>
+  </view>
+</view>

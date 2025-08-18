@@ -1,0 +1,704 @@
+/* pages/home/home.wxss */
+
+/* 状态栏 */
+.status-bar {
+  height: var(--status-bar-height, 44rpx);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 头部区域 */
+.header-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 32rpx 24rpx 40rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 80%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-info {
+  flex: 1;
+}
+
+.welcome-text {
+  font-size: 40rpx;
+  color: white;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+  letter-spacing: 1rpx;
+}
+
+.welcome-subtitle {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0.9;
+}
+
+.header-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+/* 数据概览区域 */
+.overview-section {
+  margin-bottom: 32rpx;
+}
+
+.overview-header {
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 8rpx;
+}
+
+.section-subtitle {
+  font-size: 26rpx;
+  color: #7f8c8d;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border-radius: 24rpx;
+  padding: 32rpx 24rpx;
+  box-shadow:
+    0 6rpx 24rpx rgba(102, 126, 234, 0.08),
+    0 1rpx 6rpx rgba(102, 126, 234, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.summary-card:hover {
+  transform: translateY(-2rpx);
+  box-shadow:
+    0 12rpx 36rpx rgba(102, 126, 234, 0.12),
+    0 2rpx 12rpx rgba(102, 126, 234, 0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.card-icon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+}
+
+.income-icon {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+}
+
+.expense-icon {
+  background: linear-gradient(135deg, #fef5e7 0%, #fdeaa7 100%);
+}
+
+.balance-icon {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.card-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.card-amount {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 8rpx;
+}
+
+.card-trend {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.card-trend.income {
+  color: #27ae60;
+}
+
+.card-trend.expense {
+  color: #e74c3c;
+}
+
+/* 健康周期区域 */
+.health-section {
+  margin-bottom: 32rpx;
+}
+
+.period-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 8rpx 32rpx rgba(102, 126, 234, 0.3),
+    0 2rpx 8rpx rgba(102, 126, 234, 0.2);
+}
+
+.period-card::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.period-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.period-icon {
+  font-size: 32rpx;
+}
+
+.period-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  flex: 1;
+}
+
+.period-status {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.period-content {
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.period-main-info {
+  text-align: center;
+}
+
+.days-count {
+  font-size: 56rpx;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.days-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.period-details {
+  flex: 1;
+  display: flex;
+  gap: 24rpx;
+}
+
+.detail-item {
+  text-align: center;
+  flex: 1;
+}
+
+.detail-label {
+  display: block;
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 8rpx;
+}
+
+.detail-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+/* 快捷操作区域 */
+.actions-section {
+  margin-bottom: 32rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-action {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.action-item {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border: none;
+  border-radius: 20rpx;
+  padding: 32rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  box-shadow:
+    0 6rpx 24rpx rgba(102, 126, 234, 0.08),
+    0 1rpx 6rpx rgba(102, 126, 234, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-item:hover {
+  transform: translateY(-2rpx);
+  box-shadow:
+    0 12rpx 36rpx rgba(102, 126, 234, 0.12),
+    0 2rpx 12rpx rgba(102, 126, 234, 0.08);
+}
+
+.action-icon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.action-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.income-action {
+  background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+}
+
+.income-action .action-label {
+  color: #0c5460;
+}
+
+.expense-action {
+  background: linear-gradient(135deg, #fef5e7 0%, #fdeaa7 100%);
+}
+
+.expense-action .action-label {
+  color: #8b4513;
+}
+
+.period-action {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+.period-action .action-label {
+  color: #7b1fa2;
+}
+
+.stats-action {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.stats-action .action-label {
+  color: #1976d2;
+}
+
+/* 最近交易区域 */
+.transactions-section {
+  margin-bottom: 32rpx;
+}
+
+.transaction-list {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border-radius: 24rpx;
+  padding: 8rpx;
+  box-shadow:
+    0 6rpx 24rpx rgba(102, 126, 234, 0.08),
+    0 1rpx 6rpx rgba(102, 126, 234, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 20rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  margin-bottom: 4rpx;
+}
+
+.transaction-item:last-child {
+  margin-bottom: 0;
+}
+
+.transaction-item:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.transaction-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1);
+}
+
+.transaction-icon.food {
+  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+}
+
+.transaction-icon.transport {
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.transaction-icon.shopping {
+  background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+.transaction-icon.income {
+  background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+}
+
+.transaction-info {
+  flex: 1;
+}
+
+.transaction-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 6rpx;
+}
+
+.transaction-meta {
+  font-size: 24rpx;
+  color: #7f8c8d;
+}
+
+.transaction-amount {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.amount-income {
+  color: #27ae60;
+}
+
+.amount-expense {
+  color: #e74c3c;
+}
+
+/* 最近交易 */
+.recent-transactions {
+  margin-bottom: 40rpx;
+}
+
+.transaction-list {
+  margin-top: 30rpx;
+}
+
+.transaction-item {
+  padding: 30rpx 0;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-info {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.transaction-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.1);
+}
+
+.transaction-icon.food {
+  background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+}
+
+.transaction-icon.transport {
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.transaction-icon.shopping {
+  background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+.transaction-icon.income {
+  background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+}
+
+.transaction-title {
+  font-size: 32rpx;
+  margin-bottom: 8rpx;
+  font-weight: 600;
+}
+
+.transaction-time {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.transaction-amount {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.amount-expense {
+  color: #ff4444;
+}
+
+.amount-income {
+  color: #00C851;
+}
+
+.view-more {
+  text-align: center;
+  margin-top: 30rpx;
+  padding: 20rpx;
+  color: #667eea;
+  font-size: 28rpx;
+}
+
+/* 弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-content {
+  width: 100%;
+  background: white;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx 60rpx;
+  animation: slideUp 0.4s ease-out;
+  box-shadow: 0 -20rpx 80rpx rgba(0,0,0,0.2);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  position: relative;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 28rpx;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #95a5a6;
+  transition: all 0.3s ease;
+  margin-left: 16rpx;
+  padding: 0;
+}
+
+.close-btn:hover {
+  background: rgba(149, 165, 166, 0.1);
+  color: #667eea;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  background: rgba(149, 165, 166, 0.2);
+  transform: scale(0.95);
+}
+
+.form-group {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 16rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 28rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 24rpx 20rpx;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  line-height: 1.4;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  background: #f8f9fa;
+  box-sizing: border-box;
+  color: #2c3e50;
+  vertical-align: top;
+  text-align: left;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4rpx rgba(102, 126, 234, 0.1);
+  outline: none;
+  transform: none;
+}
+
+.form-input::placeholder {
+  color: #bdc3c7;
+  font-size: 28rpx;
+}
+
+.category-grid {
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.category-item {
+  padding: 28rpx 16rpx;
+  text-align: center;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  background: #f8f9fa;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #5a6c7d;
+  min-height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-item:hover {
+  border-color: rgba(102, 126, 234, 0.3);
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.category-item.selected {
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  color: #667eea;
+  font-weight: 600;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
+  transform: scale(1.02);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 32rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: 30rpx;
+  box-shadow: 0 16rpx 50rpx rgba(102, 126, 234, 0.3);
+}

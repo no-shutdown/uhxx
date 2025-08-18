@@ -1,0 +1,167 @@
+<!--pages/home/home.wxml-->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar"></view>
+
+  <!-- 头部区域 -->
+  <view class="header-section">
+    <view class="header-content">
+      <view class="welcome-info">
+        <view class="welcome-text">🌱 薄荷生活</view>
+        <view class="welcome-subtitle">让生活更精致</view>
+      </view>
+      <view class="header-avatar">
+        <image src="/images/default-avatar.png" class="avatar-img" mode="aspectFill" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 页面内容 -->
+  <view class="page-content">
+    <!-- 数据概览卡片 -->
+    <view class="overview-section">
+      <view class="overview-header">
+        <view class="section-title">📊 本月概览</view>
+        <view class="section-subtitle">{{currentMonth}}月财务状况</view>
+      </view>
+
+      <view class="summary-cards">
+        <view class="summary-card income-card hover-float tap-feedback">
+          <view class="card-header">
+            <view class="card-icon income-icon">💎</view>
+            <view class="card-label">收入</view>
+          </view>
+          <view class="card-amount">¥{{monthlyIncome}}</view>
+          <view class="card-trend income">↗ {{incomeGrowth}}%</view>
+        </view>
+
+        <view class="summary-card expense-card hover-float tap-feedback">
+          <view class="card-header">
+            <view class="card-icon expense-icon">🛒</view>
+            <view class="card-label">支出</view>
+          </view>
+          <view class="card-amount">¥{{monthlyExpense}}</view>
+          <view class="card-trend expense">↗ {{expenseGrowth}}%</view>
+        </view>
+
+        <view class="summary-card balance-card hover-float tap-feedback">
+          <view class="card-header">
+            <view class="card-icon balance-icon">💰</view>
+            <view class="card-label">结余</view>
+          </view>
+          <view class="card-amount">¥{{monthlyBalance}}</view>
+          <view class="card-trend {{balanceGrowth >= 0 ? 'income' : 'expense'}}">
+            {{balanceGrowth >= 0 ? '↗' : '↘'}} {{Math.abs(balanceGrowth)}}%
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康周期卡片 -->
+    <view class="health-section">
+      <view class="period-card">
+        <view class="period-header">
+          <view class="period-icon">🌸</view>
+          <view class="period-title">健康周期</view>
+          <view class="period-status">{{periodStatus}}</view>
+        </view>
+        <view class="period-content">
+          <view class="period-main-info">
+            <view class="days-count">{{daysToNextPeriod}}</view>
+            <view class="days-label">天后</view>
+          </view>
+          <view class="period-details">
+            <view class="detail-item">
+              <text class="detail-label">周期</text>
+              <text class="detail-value">{{averageCycle}}天</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">准确率</text>
+              <text class="detail-value">{{accuracy}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快捷操作 -->
+    <view class="actions-section">
+      <view class="section-header">
+        <view class="section-title">⚡ 快捷操作</view>
+      </view>
+      <view class="action-grid">
+        <button class="action-item income-action tap-feedback" bindtap="openTransactionModal" data-type="income">
+          <view class="action-icon">💎</view>
+          <view class="action-label">记录收入</view>
+        </button>
+        <button class="action-item expense-action tap-feedback" bindtap="openTransactionModal" data-type="expense">
+          <view class="action-icon">🛒</view>
+          <view class="action-label">记录支出</view>
+        </button>
+        <button class="action-item period-action tap-feedback" bindtap="navigateToPeriod">
+          <view class="action-icon">🌸</view>
+          <view class="action-label">经期记录</view>
+        </button>
+        <button class="action-item stats-action tap-feedback" bindtap="navigateToAccounting">
+          <view class="action-icon">📊</view>
+          <view class="action-label">查看统计</view>
+        </button>
+      </view>
+    </view>
+
+    <!-- 最近交易 -->
+    <view class="transactions-section" wx:if="{{recentTransactions.length > 0}}">
+      <view class="section-header">
+        <view class="section-title">📝 最近交易</view>
+        <view class="section-action" bindtap="navigateToAccounting">查看全部</view>
+      </view>
+      <view class="transaction-list">
+        <view class="transaction-item hover-float" wx:for="{{recentTransactions}}" wx:key="id">
+          <view class="transaction-icon {{item.category}}">{{item.icon}}</view>
+          <view class="transaction-info">
+            <view class="transaction-title">{{item.title}}</view>
+            <view class="transaction-meta">{{item.time}} · {{item.categoryName}}</view>
+          </view>
+          <view class="transaction-amount {{item.type === 'income' ? 'amount-income' : 'amount-expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 添加交易弹窗 -->
+<view class="modal" wx:if="{{showModal}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{modalType === 'income' ? '✨ 添加收入' : '🛒 添加支出'}}</view>
+      <button class="close-btn" bindtap="closeModal">✕</button>
+    </view>
+    
+    <form bindsubmit="submitTransaction">
+      <view class="form-group">
+        <view class="form-label">💰 金额</view>
+        <input class="form-input" type="digit" placeholder="请输入金额" name="amount" value="{{formData.amount}}" bindinput="onAmountInput" />
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">🏷️ 分类</view>
+        <view class="category-grid grid grid-4">
+          <view class="category-item {{selectedCategory === item.value ? 'selected' : ''}}" 
+                wx:for="{{categories}}" wx:key="value"
+                bindtap="selectCategory" data-value="{{item.value}}">
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">📝 备注</view>
+        <input class="form-input" placeholder="添加备注信息（可选）" name="note" value="{{formData.note}}" bindinput="onNoteInput" />
+      </view>
+      
+      <button class="submit-btn btn-primary" form-type="submit">确认添加</button>
+    </form>
+  </view>
+</view>

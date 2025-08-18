@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>薄荷生活 - 智能生活助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 667px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .navigation-bar {
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .main-content {
+            height: calc(100% - 138px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .tab-bar {
+            height: 44px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(229, 229, 229, 0.3);
+            display: flex;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-item.active {
+            color: #667eea;
+        }
+
+        .tab-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 0 3px 3px;
+        }
+
+        .tab-icon {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 3px;
+            background: #999;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .tab-item.active .tab-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scale(1.1);
+        }
+
+        .tab-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 首页样式 */
+        .home-page {
+            padding: 25px 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .welcome-text {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            font-size: 14px;
+            color: #666;
+            opacity: 0.8;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .card-amount {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .income {
+            color: #00C851;
+        }
+
+        .expense {
+            color: #ff4444;
+        }
+
+        .period-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .period-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .period-title {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .period-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .actions-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 15px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .action-btn.income {
+            background: linear-gradient(135deg, #c3f7d8 0%, #a0f0b8 100%);
+            color: #00C851;
+        }
+
+        .action-btn.expense {
+            background: linear-gradient(135deg, #ffe0e0 0%, #ffc0c0 100%);
+            color: #ff4444;
+        }
+
+        /* 记账页面样式 */
+        .accounting-page {
+            display: none;
+            padding: 25px 20px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 15px 12px;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .chart-placeholder {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #00C851, #4facfe, #ff9800);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .transaction-list {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .transaction-item {
+            padding: 20px;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .food-icon {
+            background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+            color: #FF9800;
+        }
+
+        .transport-icon {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            color: #2196F3;
+        }
+
+        .shopping-icon {
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            color: #9C27B0;
+        }
+
+        .income-icon {
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            color: #4CAF50;
+        }
+
+        .transaction-details h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .transaction-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .amount-expense {
+            color: #ff4444;
+        }
+
+        .amount-income {
+            color: #00C851;
+        }
+
+        /* 经期页面样式 */
+        .period-page {
+            display: none;
+            padding: 25px 20px;
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .calendar-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .calendar-nav:hover {
+            transform: scale(1.1);
+        }
+
+        .calendar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .calendar-day.period {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .calendar-day.predicted {
+            background: linear-gradient(135deg, #FFB3C6 0%, #FF8FA3 100%);
+            color: #D81B60;
+        }
+
+        .calendar-day.ovulation {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.1);
+        }
+
+        .period-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .stat-number {
+            font-size: 26px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 更多页面样式 */
+        .more-page {
+            display: none;
+            padding: 25px 20px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .module-icon {
+            width: 55px;
+            height: 55px;
+            margin: 0 auto 15px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .module-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .module-card p {
+            color: #666;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .module-card.coming-soon {
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .add-transaction-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .add-transaction-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 30px 25px;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .close-btn {
+            background: #f8f9fa;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            background: white;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .category-item {
+            padding: 18px 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            background: #f8f9fa;
+        }
+
+        .category-item:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .category-item.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 滚动条样式 */
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 📶 📶 🔋100%</span>
+        </div>
+
+        <!-- 导航栏 -->
+        <div class="navigation-bar">
+            <span id="nav-title">薄荷生活</span>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 首页 -->
+            <div class="home-page" id="home-page">
+                <!-- 欢迎区域 -->
+                <div class="welcome-section">
+                    <div class="welcome-text">🌱 薄荷生活</div>
+                    <div class="welcome-subtitle">让生活更精致，让每一天都充满活力</div>
+                </div>
+
+                <!-- 本月收支概览 -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="card-title">本月收入</div>
+                        <div class="card-amount income">¥8,500</div>
+                        <div style="font-size: 12px; color: #00C851; margin-top: 5px;">↗ 比上月增长12%</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-title">本月支出</div>
+                        <div class="card-amount expense">¥3,240</div>
+                        <div style="font-size: 12px; color: #ff4444; margin-top: 5px;">↗ 比上月增长5%</div>
+                    </div>
+                </div>
+
+                <!-- 经期信息卡片 -->
+                <div class="period-card">
+                    <div class="period-title">🌸 健康周期</div>
+                    <div class="period-info">距离下次经期还有 8 天</div>
+                    <div class="period-info">周期平均 28 天 · 预测准确率 92%</div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="quick-actions">
+                    <div class="actions-title">💰 快捷记账</div>
+                    <div class="action-buttons">
+                        <button class="action-btn income" onclick="openTransactionModal('income')">
+                            <span>💎</span>
+                            <span>记录收入</span>
+                        </button>
+                        <button class="action-btn expense" onclick="openTransactionModal('expense')">
+                            <span>🛒</span>
+                            <span>记录支出</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 记账页面 -->
+            <div class="accounting-page" id="accounting-page">
+                <!-- 时间筛选 -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active">今日</button>
+                    <button class="filter-tab">本月</button>
+                    <button class="filter-tab">本年</button>
+                </div>
+
+                <!-- 图表展示 -->
+                <div class="chart-container">
+                    <h3 style="color: #333; margin-bottom: 10px;">📊 支出分析</h3>
+                    <div class="chart-placeholder">
+                        智能统计图表
+                    </div>
+                    <p style="color: #666; margin-top: 10px;">今日支出 ¥186 · 餐饮占比最高</p>
+                </div>
+
+                <!-- 交易记录列表 -->
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon food-icon">🍽️</div>
+                            <div class="transaction-details">
+                                <h4>午餐时光</h4>
+                                <p>12:30 · 餐饮美食</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount amount-expense">-¥38</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon transport-icon">🚇</div>
+                            <div class="transaction-details">
+                                <h4>地铁出行</h4>
+                                <p>09:15 · 交通出行</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount amount-expense">-¥6</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon shopping-icon">☕</div>
+                            <div class="transaction-details">
+                                <h4>下午茶</h4>
+                                <p>15:20 · 休闲饮品</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount amount-expense">-¥25</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-icon income-icon">💰</div>
+                            <div class="transaction-details">
+                                <h4>月度工资</h4>
+                                <p>昨天 · 工作收入</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount amount-income">+¥8,500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 经期页面 -->
+            <div class="period-page" id="period-page">
+                <!-- 日历 -->
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav">‹</button>
+                        <h3 class="calendar-title">2024年1月</h3>
+                        <button class="calendar-nav">›</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <!-- 星期标题 -->
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">日</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">一</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">二</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">三</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">四</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">五</div>
+                        <div style="text-align: center; color: #666; font-size: 12px; padding: 8px; font-weight: 600;">六</div>
+                        
+                        <!-- 日期 -->
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day period">3</div>
+                        <div class="calendar-day period">4</div>
+                        <div class="calendar-day period">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day ovulation">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day today">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day">22</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day predicted">31</div>
+                    </div>
+                </div>
+
+                <!-- 统计信息 -->
+                <div class="period-stats">
+                    <h3 style="color: #333; margin-bottom: 5px;">📊 健康统计</h3>
+                    <p style="color: #666; font-size: 14px;">基于智能算法的个性化分析</p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">28</div>
+                            <div class="stat-label">平均周期（天）</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">平均经期（天）</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">距下次经期</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">92%</div>
+                            <div class="stat-label">预测准确率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 更多页面 -->
+            <div class="more-page" id="more-page">
+                <h3 class="section-title">🚀 功能中心</h3>
+                
+                <!-- 已有模块 -->
+                <div class="module-grid">
+                    <div class="module-card" onclick="showTab('accounting')">
+                        <div class="module-icon" style="background: linear-gradient(135deg, #00C851 0%, #4CAF50 100%);">💰</div>
+                        <h4>智能记账</h4>
+                        <p>轻松管理收支</p>
+                    </div>
+                    <div class="module-card" onclick="showTab('period')">
+                        <div class="module-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🌸</div>
+                        <h4>健康周期</h4>
+                        <p>精准预测记录</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title">✨ 即将发布</h3>
+                
+                <!-- 预留模块 -->
+                <div class="module-grid">
+                    <div class="module-card coming-soon">
+                        <div class="coming-soon-badge">敬请期待</div>
+                        <div class="module-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">💊</div>
+                        <h4>健康管家</h4>
+                        <p>体重运动全记录</p>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <div class="coming-soon-badge">敬请期待</div>
+                        <div class="module-icon" style="background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);">📝</div>
+                        <h4>心情笔记</h4>
+                        <p>情绪智能分析</p>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <div class="coming-soon-badge">敬请期待</div>
+                        <div class="module-icon" style="background: linear-gradient(135deg, #E91E63 0%, #F06292 100%);">💄</div>
+                        <h4>美容日记</h4>
+                        <p>护肤品智能管理</p>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <div class="coming-soon-badge">敬请期待</div>
+                        <div class="module-icon" style="background: linear-gradient(135deg, #8BC34A 0%, #AED581 100%);">🥗</div>
+                        <h4>营养助手</h4>
+                        <p>健康饮食指导</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="showTab('home')">
+                <div class="tab-icon"></div>
+                <div class="tab-text">首页</div>
+            </div>
+            <div class="tab-item" onclick="showTab('accounting')">
+                <div class="tab-icon"></div>
+                <div class="tab-text">记账</div>
+            </div>
+            <div class="tab-item" onclick="showTab('period')">
+                <div class="tab-icon"></div>
+                <div class="tab-text">周期</div>
+            </div>
+            <div class="tab-item" onclick="showTab('more')">
+                <div class="tab-icon"></div>
+                <div class="tab-text">更多</div>
+            </div>
+        </div>
+
+        <!-- 添加记录按钮 -->
+        <button class="add-transaction-btn" onclick="openTransactionModal('expense')">+</button>
+    </div>
+
+    <!-- 添加交易弹窗 -->
+    <div class="modal" id="transaction-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">添加支出</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="transaction-form">
+                <div class="form-group">
+                    <label class="form-label">💰 金额</label>
+                    <input type="number" class="form-input" placeholder="请输入金额" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">🏷️ 分类</label>
+                    <div class="category-grid" id="category-grid">
+                        <!-- 分类选项将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">📝 备注</label>
+                    <input type="text" class="form-input" placeholder="添加备注信息（可选）">
+                </div>
+                
+                <button type="submit" class="submit-btn">确认添加</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 标签页切换
+        function showTab(tabName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.main-content > div').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // 显示选中页面
+            document.getElementById(tabName + '-page').style.display = 'block';
+            
+            // 更新底部导航高亮
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.tab-item').classList.add('active');
+            
+            // 更新导航栏标题
+            const titles = {
+                'home': '薄荷生活',
+                'accounting': '智能记账',
+                'period': '健康周期',
+                'more': '功能中心'
+            };
+            document.getElementById('nav-title').textContent = titles[tabName];
+        }
+
+        // 打开交易弹窗
+        function openTransactionModal(type) {
+            const modal = document.getElementById('transaction-modal');
+            const title = document.getElementById('modal-title');
+            const categoryGrid = document.getElementById('category-grid');
+            
+            title.textContent = type === 'income' ? '✨ 添加收入' : '🛒 添加支出';
+            
+            // 生成分类选项
+            const categories = type === 'income' 
+                ? ['💰 工资', '💼 兼职', '📈 投资', '🎁 红包', '💳 转账', '🏆 奖金', '💎 理财', '🌟 其他']
+                : ['🍽️ 餐饮', '🚇 交通', '🛍️ 购物', '🏠 住房', '💊 医疗', '📚 教育', '🎮 娱乐', '📱 通讯'];
+            
+            categoryGrid.innerHTML = categories.map(cat => 
+                `<div class="category-item" onclick="selectCategory(this)">${cat}</div>`
+            ).join('');
+            
+            modal.style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('transaction-modal').style.display = 'none';
+        }
+
+        // 选择分类
+        function selectCategory(element) {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        // 筛选标签切换
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 表单提交
+        document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ 记录添加成功！');
+            closeModal();
+        });
+
+        // 点击模态框背景关闭
+        document.getElementById('transaction-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 日历日期点击
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            if (day.textContent) {
+                day.addEventListener('click', function() {
+                    alert(`已选择 ${this.textContent} 号`);
+                });
+            }
+        });
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 薄荷生活 - 智能生活助手加载完成');
+            
+            // 添加页面切换动画效果
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
