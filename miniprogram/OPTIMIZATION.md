@@ -437,6 +437,81 @@ export interface PeriodData {
 }
 ```
 
+### 11. 全局对象类型修复（简化方案）
+
+#### 🚨 问题描述
+`console.xxx` 和 `wx.xxx` 标红的原因：
+- TypeScript 配置问题，没有正确引用官方类型定义
+- 这些都是自带的方法，不需要手动写类型定义
+
+#### ✅ 简化解决方案
+
+**使用官方类型定义包**
+```json
+// package.json - 只需要这一个包
+{
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.0",
+    "typescript": "^4.9.0"
+  }
+}
+```
+
+**简化的 TypeScript 配置**
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "lib": ["ES2018"],
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "types": ["miniprogram-api-typings"]
+  },
+  "include": ["**/*.ts", "./types/**/*", "./typings/**/*"],
+  "exclude": ["node_modules", "miniprogram_npm"]
+}
+```
+
+**最小化类型声明**
+```typescript
+// typings/index.d.ts - 只声明自定义类型
+/// <reference types="miniprogram-api-typings" />
+
+declare global {
+  interface IAppOption {
+    globalData: {
+      userInfo?: WechatMiniprogram.UserInfo
+      transactions: import('../types/index').Transaction[]
+      periodData: import('../types/index').PeriodData
+      settings: import('../types/index').AppSettings
+    }
+  }
+}
+```
+
+#### 🎯 修复效果
+
+**自动获得支持**
+- ✅ `console.log()` - ES2018 标准库自带
+- ✅ `wx.showToast()` - miniprogram-api-typings 提供
+- ✅ 所有微信小程序 API - 官方类型包覆盖
+- ✅ 完整的智能提示和类型检查
+
+**开发体验**
+- 🎯 **零配置**: 使用官方类型定义，无需手动维护
+- 📦 **轻量级**: 只依赖必要的类型包
+- 🔄 **自动更新**: 跟随官方 API 更新
+- 🛡️ **稳定可靠**: 官方维护，质量保证
+
+#### 💡 最佳实践
+
+1. **优先使用官方类型定义**: 不要重复造轮子
+2. **最小化自定义类型**: 只定义业务相关的类型
+3. **合理配置 TypeScript**: 平衡严格性和开发效率
+4. **定期更新依赖**: 保持与官方 API 同步
+
 #### 🎯 问题描述
 TypeScript 文件中存在大量 `any` 类型和缺失的类型定义，导致：
 - 编译器警告和错误提示

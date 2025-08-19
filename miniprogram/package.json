@@ -1,0 +1,22 @@
+{
+  "name": "mint-life-miniprogram",
+  "version": "1.0.0",
+  "description": "薄荷生活小程序",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tslint --project ."
+  },
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.0",
+    "typescript": "^4.9.0"
+  },
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "typescript"
+  ],
+  "author": "Mint Life Team",
+  "license": "MIT"
+}
