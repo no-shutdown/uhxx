@@ -1,9 +1,15 @@
 // app.ts
+import { IAppOption } from './types/index'
+
 App<IAppOption>({
   globalData: {
-    userInfo: null,
+    userInfo: undefined,
     transactions: [], // 交易记录
-    periodData: {}, // 经期数据
+    periodData: {
+      cycleLength: 28,
+      periodLength: 5,
+      predictions: []
+    }, // 经期数据
     settings: {
       theme: 'default',
       currency: '¥'

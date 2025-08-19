@@ -1,4 +1,6 @@
 // pages/accounting/accounting.ts
+import { Transaction, Category, CategoryStat, WxEvent, FormSubmitEvent, InputEvent, GroupedTransaction } from '../../types/index'
+
 Page({
   data: {
     // 筛选相关
@@ -89,7 +91,7 @@ Page({
   },
 
   // 处理交易数据
-  processTransactions(allTransactions: any[]) {
+  processTransactions(allTransactions: Transaction[]) {
     // 根据筛选条件过滤交易
     const filteredTransactions = this.filterTransactions(allTransactions)
     
@@ -104,7 +106,7 @@ Page({
   },
 
   // 根据筛选条件过滤交易
-  filterTransactions(transactions: any[]): any[] {
+  filterTransactions(transactions: Transaction[]): Transaction[] {
     const now = new Date()
     const { activeFilter } = this.data
     
@@ -133,7 +135,7 @@ Page({
   },
 
   // 计算统计数据
-  calculateStatistics(transactions: any[]) {
+  calculateStatistics(transactions: Transaction[]) {
     let totalIncome = 0
     let totalExpense = 0
     
@@ -155,7 +157,7 @@ Page({
   },
 
   // 按日期分组交易记录
-  groupTransactionsByDate(transactions: any[]) {
+  groupTransactionsByDate(transactions: Transaction[]) {
     const groups: { [key: string]: any[] } = {}
     
     transactions.forEach(transaction => {
@@ -186,7 +188,7 @@ Page({
   },
 
   // 计算分类统计
-  calculateCategoryStats(transactions: any[]) {
+  calculateCategoryStats(transactions: Transaction[]) {
     const expenseTransactions = transactions.filter(t => t.type === 'expense')
     const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0)
     
@@ -224,7 +226,7 @@ Page({
   },
 
   // 切换筛选条件
-  switchFilter(e: any) {
+  switchFilter(e: WxEvent) {
     const filter = e.currentTarget.dataset.filter
     const filterTexts = {
       'today': '今日',
@@ -331,7 +333,7 @@ Page({
   },
 
   // 切换弹窗类型
-  switchModalType(e: any) {
+  switchModalType(e: WxEvent) {
     const type = e.currentTarget.dataset.type
     const categories = type === 'income' ? this.data.incomeCategories : this.data.expenseCategories
 
@@ -343,7 +345,7 @@ Page({
   },
 
   // 选择分类
-  selectCategory(e: any) {
+  selectCategory(e: WxEvent) {
     const value = e.currentTarget.dataset.value
     this.setData({
       selectedCategory: value
@@ -351,7 +353,7 @@ Page({
   },
 
   // 输入金额
-  onAmountInput(e: any) {
+  onAmountInput(e: InputEvent) {
     let value = e.detail.value
 
     // 只允许数字和小数点
@@ -380,14 +382,14 @@ Page({
   },
 
   // 输入备注
-  onNoteInput(e: any) {
+  onNoteInput(e: InputEvent) {
     this.setData({
       'formData.note': e.detail.value
     })
   },
 
   // 提交交易
-  submitTransaction(e: any) {
+  submitTransaction(e: FormSubmitEvent) {
     const { amount, note } = e.detail.value
     const { modalType, selectedCategory } = this.data
 

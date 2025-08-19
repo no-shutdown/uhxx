@@ -1,4 +1,6 @@
 // pages/home/home.ts
+import { Transaction, WxEvent, FormSubmitEvent, InputEvent, PeriodData } from '../../types/index'
+
 Page({
   data: {
     // 收支数据
@@ -121,7 +123,7 @@ Page({
   },
 
   // 计算本月收支
-  calculateMonthlySummary(transactions: any[]) {
+  calculateMonthlySummary(transactions: Transaction[]) {
     const now = new Date()
     const currentMonth = now.getMonth()
     const currentYear = now.getFullYear()
@@ -152,7 +154,7 @@ Page({
   },
 
   // 更新经期信息
-  updatePeriodInfo(periodData: any) {
+  updatePeriodInfo(periodData: PeriodData) {
     if (periodData.lastPeriod) {
       const lastPeriod = new Date(periodData.lastPeriod)
       const now = new Date()
@@ -170,7 +172,7 @@ Page({
   },
 
   // 更新最近交易
-  updateRecentTransactions(transactions: any[]) {
+  updateRecentTransactions(transactions: Transaction[]) {
     const recent = transactions
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 3)
@@ -209,7 +211,7 @@ Page({
   },
 
   // 打开交易弹窗
-  openTransactionModal(e: any) {
+  openTransactionModal(e: WxEvent) {
     const type = e.currentTarget.dataset.type || 'expense'
     const categories = type === 'income' ? this.data.incomeCategories : this.data.expenseCategories
     
@@ -238,7 +240,7 @@ Page({
   },
 
   // 选择分类
-  selectCategory(e: any) {
+  selectCategory(e: WxEvent) {
     const value = e.currentTarget.dataset.value
     this.setData({
       selectedCategory: value
@@ -246,7 +248,7 @@ Page({
   },
 
   // 输入金额
-  onAmountInput(e: any) {
+  onAmountInput(e: InputEvent) {
     let value = e.detail.value
 
     // 只允许数字和小数点
@@ -275,14 +277,14 @@ Page({
   },
 
   // 输入备注
-  onNoteInput(e: any) {
+  onNoteInput(e: InputEvent) {
     this.setData({
       'formData.note': e.detail.value
     })
   },
 
   // 提交交易
-  submitTransaction(e: any) {
+  submitTransaction(e: FormSubmitEvent) {
     const { amount, note } = e.detail.value
     const { modalType, selectedCategory } = this.data
     

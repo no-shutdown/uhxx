@@ -1,4 +1,6 @@
 // pages/more/more.ts
+import { UserProfile, WxEvent, FormSubmitEvent, InputEvent, PickerEvent } from '../../types/index'
+
 Page({
   data: {
     // 用户信息
@@ -140,28 +142,28 @@ Page({
   },
 
   // 昵称输入
-  onNickNameInput(e: any) {
+  onNickNameInput(e: InputEvent) {
     this.setData({
       'profileForm.nickName': e.detail.value
     })
   },
 
   // 生日变化
-  onBirthdayChange(e: any) {
+  onBirthdayChange(e: PickerEvent) {
     this.setData({
       'profileForm.birthday': e.detail.value
     })
   },
 
   // 签名输入
-  onSignatureInput(e: any) {
+  onSignatureInput(e: InputEvent) {
     this.setData({
       'profileForm.signature': e.detail.value
     })
   },
 
   // 提交资料
-  submitProfile(e: any) {
+  submitProfile(e: FormSubmitEvent) {
     const { profileForm } = this.data
     
     // 验证数据

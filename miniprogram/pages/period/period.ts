@@ -1,4 +1,6 @@
 // pages/period/period.ts
+import { PeriodData, PeriodRecord, CalendarDay, WxEvent, FormSubmitEvent, InputEvent, PickerEvent } from '../../types/index'
+
 Page({
   data: {
     // 日历相关
@@ -326,7 +328,7 @@ Page({
   },
 
   // 选择日期
-  selectDate(e: any) {
+  selectDate(e: WxEvent) {
     const date = e.currentTarget.dataset.date
     console.log('选择日期:', date)
 
@@ -380,21 +382,21 @@ Page({
   },
 
   // 开始日期变化
-  onStartDateChange(e: any) {
+  onStartDateChange(e: PickerEvent) {
     this.setData({
       'periodForm.startDate': e.detail.value
     })
   },
 
   // 结束日期变化
-  onEndDateChange(e: any) {
+  onEndDateChange(e: PickerEvent) {
     this.setData({
       'periodForm.endDate': e.detail.value
     })
   },
 
   // 选择流量
-  selectFlow(e: any) {
+  selectFlow(e: WxEvent) {
     const value = e.currentTarget.dataset.value
     this.setData({
       'periodForm.flow': value
@@ -402,21 +404,21 @@ Page({
   },
 
   // 经期备注输入
-  onPeriodNoteInput(e: any) {
+  onPeriodNoteInput(e: InputEvent) {
     this.setData({
       'periodForm.note': e.detail.value
     })
   },
 
   // 症状日期变化
-  onSymptomDateChange(e: any) {
+  onSymptomDateChange(e: PickerEvent) {
     this.setData({
       'symptomForm.date': e.detail.value
     })
   },
 
   // 选择心情
-  selectMood(e: any) {
+  selectMood(e: WxEvent) {
     const value = e.currentTarget.dataset.value
     this.setData({
       'symptomForm.mood': value
@@ -424,7 +426,7 @@ Page({
   },
 
   // 切换症状
-  toggleSymptom(e: any) {
+  toggleSymptom(e: WxEvent) {
     const value = e.currentTarget.dataset.value
     const symptoms = [...this.data.symptomForm.symptoms]
     const index = symptoms.indexOf(value)
@@ -441,14 +443,14 @@ Page({
   },
 
   // 症状备注输入
-  onSymptomNoteInput(e: any) {
+  onSymptomNoteInput(e: InputEvent) {
     this.setData({
       'symptomForm.note': e.detail.value
     })
   },
 
   // 提交经期记录
-  submitPeriodRecord(e: any) {
+  submitPeriodRecord(e: FormSubmitEvent) {
     const { periodForm } = this.data
 
     // 验证数据
@@ -529,7 +531,7 @@ Page({
   },
 
   // 提交症状记录
-  submitSymptomRecord(e: any) {
+  submitSymptomRecord(e: FormSubmitEvent) {
     const { symptomForm } = this.data
 
     // 验证数据
@@ -561,6 +563,9 @@ Page({
       }
 
       // 检查是否已有当天的记录，如果有则更新
+      if (!periodData.symptoms) {
+        periodData.symptoms = []
+      }
       const existingIndex = periodData.symptoms.findIndex((s: any) => s.date === symptomForm.date)
       if (existingIndex > -1) {
         periodData.symptoms[existingIndex] = newSymptom
@@ -585,5 +590,29 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  // 刷新数据
+  refreshData() {
+    this.loadData()
+  },
+
+  // 关闭经期记录弹窗
+  closePeriodModal() {
+    this.setData({
+      showPeriodModal: false
+    })
+  },
+
+  // 关闭症状记录弹窗
+  closeSymptomModal() {
+    this.setData({
+      showSymptomModal: false
+    })
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   }
 })
