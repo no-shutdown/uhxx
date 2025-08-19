@@ -577,12 +577,14 @@
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 32rpx;
   padding-bottom: 24rpx;
+  padding-right: 56rpx;
   border-bottom: 2rpx solid #f0f0f0;
   position: relative;
+  min-height: 60rpx;
 }
 
 .modal-title {
@@ -594,18 +596,24 @@
 
 .close-btn {
   background: transparent;
-  border: none;
-  font-size: 28rpx;
-  width: 48rpx;
-  height: 48rpx;
+  font-size: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #95a5a6;
   transition: all 0.3s ease;
-  margin-left: 16rpx;
   padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 16rpx;
+  right: 20rpx;
+  z-index: 10;
+  line-height: 1;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .close-btn:hover {
@@ -633,16 +641,17 @@
 
 .form-input {
   width: 100%;
-  padding: 24rpx 20rpx;
+  padding: 0 24rpx;
   border: 2rpx solid #e9ecef;
   border-radius: 16rpx;
-  font-size: 30rpx;
-  line-height: 1.4;
+  font-size: 32rpx;
+  line-height: 88rpx;
+  height: 88rpx;
   transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   background: #f8f9fa;
   box-sizing: border-box;
   color: #2c3e50;
-  vertical-align: top;
+  vertical-align: middle;
   text-align: left;
 }
 
@@ -656,7 +665,8 @@
 
 .form-input::placeholder {
   color: #bdc3c7;
-  font-size: 28rpx;
+  font-size: 32rpx;
+  line-height: 88rpx;
 }
 
 .category-grid {

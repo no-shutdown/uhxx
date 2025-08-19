@@ -247,8 +247,30 @@ Page({
 
   // 输入金额
   onAmountInput(e: any) {
+    let value = e.detail.value
+
+    // 只允许数字和小数点
+    value = value.replace(/[^\d.]/g, '')
+
+    // 确保只有一个小数点
+    const parts = value.split('.')
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('')
+    }
+
+    // 限制小数点后最多两位
+    if (parts[1] && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2)
+    }
+
+    // 限制最大值
+    const numValue = parseFloat(value)
+    if (numValue > 999999.99) {
+      value = '999999.99'
+    }
+
     this.setData({
-      'formData.amount': e.detail.value
+      'formData.amount': value
     })
   },
 

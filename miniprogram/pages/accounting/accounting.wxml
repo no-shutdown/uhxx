@@ -89,7 +89,7 @@
 
 <!-- 添加记录按钮 -->
 <view class="add-btn" bindtap="openTransactionModal">
-  <text>+</text>
+  <view class="add-icon"></view>
 </view>
 
 <!-- 添加交易弹窗 -->
@@ -97,7 +97,7 @@
   <view class="modal-content" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">{{modalType === 'income' ? '✨ 添加收入' : '🛒 添加支出'}}</view>
-      <button class="close-btn" bindtap="closeModal">✕</button>
+      <view class="close-btn" bindtap="closeModal">✕</view>
     </view>
     
     <!-- 类型切换 -->
@@ -111,8 +111,9 @@
     <form bindsubmit="submitTransaction">
       <view class="form-group">
         <view class="form-label">💰 金额</view>
-        <input class="form-input" type="digit" placeholder="请输入金额" name="amount" 
-               value="{{formData.amount}}" bindinput="onAmountInput" />
+        <input class="form-input" type="digit" placeholder="请输入金额" name="amount"
+               value="{{formData.amount}}" bindinput="onAmountInput"
+               maxlength="10" confirm-type="done" />
       </view>
       
       <view class="form-group">

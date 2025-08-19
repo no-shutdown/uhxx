@@ -375,39 +375,46 @@
 
 .form-input {
   width: 100%;
-  padding: 24rpx 20rpx;
+  padding: 28rpx 24rpx;
   border: 2rpx solid #e9ecef;
   border-radius: 16rpx;
-  font-size: 30rpx;
-  line-height: 1.4;
+  font-size: 32rpx;
+  line-height: 1.5;
+  min-height: 88rpx;
   transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   background: #f8f9fa;
   box-sizing: border-box;
   color: #2c3e50;
-  vertical-align: top;
+  vertical-align: middle;
   text-align: left;
+  display: flex;
+  align-items: center;
 }
 
 .picker-input {
   color: #2c3e50;
   display: flex;
   align-items: center;
-  min-height: 72rpx;
+  min-height: 88rpx;
+  width: 100%;
+  padding: 28rpx 24rpx;
+  box-sizing: border-box;
 }
 
 .form-textarea {
   width: 100%;
-  min-height: 120rpx;
-  padding: 24rpx 20rpx;
+  min-height: 140rpx;
+  padding: 28rpx 24rpx;
   border: 2rpx solid #e9ecef;
   border-radius: 16rpx;
-  font-size: 30rpx;
-  line-height: 1.4;
+  font-size: 32rpx;
+  line-height: 1.5;
   background: #f8f9fa;
   box-sizing: border-box;
   color: #2c3e50;
   vertical-align: top;
   text-align: left;
+  resize: none;
 }
 
 .form-input:focus,
