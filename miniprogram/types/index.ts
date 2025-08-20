@@ -9,6 +9,7 @@ export interface IAppOption {
     settings: AppSettings
   }
   userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback
+  initStorage(): void
 }
 
 // 交易记录接口

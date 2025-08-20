@@ -4,8 +4,8 @@ import { PeriodData, PeriodRecord, CalendarDay, WxEvent, FormSubmitEvent, InputE
 Page({
   data: {
     // 日历相关
-    currentYear: 2024,
-    currentMonth: 1,
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth() + 1,
     weekdays: ['日', '一', '二', '三', '四', '五', '六'],
     calendarDays: [],
     
@@ -102,52 +102,68 @@ Page({
   // 生成日历
   generateCalendar() {
     const { currentYear, currentMonth } = this.data
+
+    // 确保年月数据有效
+    if (!currentYear || !currentMonth || currentMonth < 1 || currentMonth > 12) {
+      console.error('无效的年月数据:', currentYear, currentMonth)
+      return
+    }
+
+    // 获取当月第一天和最后一天
     const firstDay = new Date(currentYear, currentMonth - 1, 1)
     const lastDay = new Date(currentYear, currentMonth, 0)
-    const firstDayWeek = firstDay.getDay()
-    const daysInMonth = lastDay.getDate()
-    
+    const firstDayWeek = firstDay.getDay() // 当月第一天是星期几
+    const daysInMonth = lastDay.getDate() // 当月总天数
+
+    console.log(`生成日历: ${currentYear}年${currentMonth}月, 共${daysInMonth}天, 第一天是星期${firstDayWeek}`)
+
     const calendarDays = []
-    
-    // 添加上个月的日期
-    const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1
-    const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear
-    const prevMonthLastDay = new Date(prevYear, prevMonth, 0).getDate()
-    
-    for (let i = firstDayWeek - 1; i >= 0; i--) {
-      const day = prevMonthLastDay - i
-      calendarDays.push({
-        day: day,
-        date: `${prevYear}-${prevMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
-        class: 'other-month'
-      })
+
+    // 添加上个月的日期（填充第一周）
+    if (firstDayWeek > 0) {
+      const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1
+      const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear
+      const prevMonthLastDay = new Date(prevYear, prevMonth, 0).getDate()
+
+      for (let i = firstDayWeek - 1; i >= 0; i--) {
+        const day = prevMonthLastDay - i
+        calendarDays.push({
+          day: day,
+          date: `${prevYear}-${prevMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+          class: 'other-month'
+        })
+      }
     }
-    
+
     // 添加当月的日期
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       const dayClass = this.getDayClass(dateStr)
-      
+
       calendarDays.push({
         day: day,
         date: dateStr,
         class: dayClass
       })
     }
-    
-    // 添加下个月的日期
+
+    // 添加下个月的日期（填充最后一周，确保总共42个格子，6行7列）
     const remainingDays = 42 - calendarDays.length
-    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1
-    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear
-    
-    for (let day = 1; day <= remainingDays; day++) {
-      calendarDays.push({
-        day: day,
-        date: `${nextYear}-${nextMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
-        class: 'other-month'
-      })
+    if (remainingDays > 0) {
+      const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1
+      const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear
+
+      for (let day = 1; day <= remainingDays; day++) {
+        calendarDays.push({
+          day: day,
+          date: `${nextYear}-${nextMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+          class: 'other-month'
+        })
+      }
     }
-    
+
+    console.log(`日历生成完成，共${calendarDays.length}个日期`)
+
     this.setData({
       calendarDays: calendarDays
     })
@@ -590,29 +606,5 @@ Page({
         icon: 'none'
       })
     }
-  },
-
-  // 刷新数据
-  refreshData() {
-    this.loadData()
-  },
-
-  // 关闭经期记录弹窗
-  closePeriodModal() {
-    this.setData({
-      showPeriodModal: false
-    })
-  },
-
-  // 关闭症状记录弹窗
-  closeSymptomModal() {
-    this.setData({
-      showSymptomModal: false
-    })
-  },
-
-  // 阻止事件冒泡
-  stopPropagation() {
-    // 空函数，用于阻止事件冒泡
   }
 })

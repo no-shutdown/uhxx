@@ -20,19 +20,27 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home-active.png"
       },
       {
         "pagePath": "pages/accounting/accounting",
-        "text": "记账"
+        "text": "记账",
+        "iconPath": "images/tab/accounting.png",
+        "selectedIconPath": "images/tab/accounting-active.png"
       },
       {
         "pagePath": "pages/period/period",
-        "text": "周期"
+        "text": "周期",
+        "iconPath": "images/tab/period.png",
+        "selectedIconPath": "images/tab/period-active.png"
       },
       {
         "pagePath": "pages/more/more",
-        "text": "更多"
+        "text": "更多",
+        "iconPath": "images/tab/more.png",
+        "selectedIconPath": "images/tab/more-active.png"
       }
     ]
   },
