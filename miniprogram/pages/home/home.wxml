@@ -90,22 +90,22 @@
         <view class="section-title">⚡ 快捷操作</view>
       </view>
       <view class="action-grid">
-        <button class="action-item income-action tap-feedback" bindtap="openTransactionModal" data-type="income">
+        <view class="action-item income-action tap-feedback" bindtap="openTransactionModal" data-type="income">
           <view class="action-icon">💎</view>
           <view class="action-label">记录收入</view>
-        </button>
-        <button class="action-item expense-action tap-feedback" bindtap="openTransactionModal" data-type="expense">
+        </view>
+        <view class="action-item expense-action tap-feedback" bindtap="openTransactionModal" data-type="expense">
           <view class="action-icon">🛒</view>
           <view class="action-label">记录支出</view>
-        </button>
-        <button class="action-item period-action tap-feedback" bindtap="navigateToPeriod">
+        </view>
+        <view class="action-item period-action tap-feedback" bindtap="navigateToPeriod">
           <view class="action-icon">🌸</view>
           <view class="action-label">经期记录</view>
-        </button>
-        <button class="action-item stats-action tap-feedback" bindtap="navigateToAccounting">
+        </view>
+        <view class="action-item stats-action tap-feedback" bindtap="navigateToAccounting">
           <view class="action-icon">📊</view>
           <view class="action-label">查看统计</view>
-        </button>
+        </view>
       </view>
     </view>
 
