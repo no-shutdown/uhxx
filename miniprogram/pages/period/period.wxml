@@ -3,9 +3,9 @@
   <!-- 日历容器 -->
   <view class="calendar-container card">
     <view class="calendar-header">
-      <button class="calendar-nav" bindtap="prevMonth">‹</button>
+      <view class="calendar-nav" bindtap="prevMonth">‹</view>
       <view class="calendar-title">{{currentYear}}年{{currentMonth}}月</view>
-      <button class="calendar-nav" bindtap="nextMonth">›</button>
+      <view class="calendar-nav" bindtap="nextMonth">›</view>
     </view>
     
     <view class="calendar-grid">
@@ -105,7 +105,7 @@
   <view class="modal-content" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">🌸 记录经期</view>
-      <button class="close-btn" bindtap="closePeriodModal">×</button>
+      <view class="close-btn" bindtap="closePeriodModal">×</view>
     </view>
     
     <form bindsubmit="submitPeriodRecord">
@@ -151,7 +151,7 @@
   <view class="modal-content" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">📝 记录症状</view>
-      <button class="close-btn" bindtap="closeSymptomModal">×</button>
+      <view class="close-btn" bindtap="closeSymptomModal">×</view>
     </view>
     
     <form bindsubmit="submitSymptomRecord">

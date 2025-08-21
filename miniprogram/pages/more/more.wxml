@@ -10,7 +10,7 @@
       <view class="user-desc">让生活更精致，让每一天都充满活力</view>
     </view>
     <view class="user-action">
-      <button class="edit-btn" bindtap="editProfile">编辑</button>
+      <view class="edit-btn" bindtap="editProfile">编辑</view>
     </view>
   </view>
 
@@ -146,7 +146,7 @@
   <view class="modal-content" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">✏️ 编辑资料</view>
-      <button class="close-btn" bindtap="closeProfileModal">×</button>
+      <view class="close-btn" bindtap="closeProfileModal">×</view>
     </view>
     
     <form bindsubmit="submitProfile">

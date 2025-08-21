@@ -6,7 +6,6 @@
     "urlCheck": true,
     "coverView": false,
     "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": true,
     "preloadBackgroundData": false,
     "autoAudits": false,
     "useApiHook": true,

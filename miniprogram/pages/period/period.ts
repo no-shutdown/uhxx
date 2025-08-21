@@ -8,22 +8,22 @@ Page({
     currentMonth: new Date().getMonth() + 1,
     weekdays: ['日', '一', '二', '三', '四', '五', '六'],
     calendarDays: [],
-    
+
     // 统计数据
     averageCycle: 28,
     averagePeriod: 5,
     daysToNext: 8,
     accuracy: 92,
-    
+
     // 周期信息
     lastPeriodText: '1月3日 - 1月7日',
     nextPeriodText: '1月31日（预测）',
     ovulationText: '1月17日 - 1月19日',
-    
+
     // 弹窗状态
     showPeriodModal: false,
     showSymptomModal: false,
-    
+
     // 经期记录表单
     periodForm: {
       startDate: '',
@@ -31,7 +31,7 @@ Page({
       flow: '',
       note: ''
     },
-    
+
     // 症状记录表单
     symptomForm: {
       date: '',
@@ -39,7 +39,7 @@ Page({
       symptoms: [],
       note: ''
     },
-    
+
     // 选项数据
     flowOptions: [
       { value: 'light', label: '少量', icon: '💧' },
@@ -47,7 +47,7 @@ Page({
       { value: 'heavy', label: '较多', icon: '💧💧💧' },
       { value: 'very_heavy', label: '很多', icon: '💧💧💧💧' }
     ],
-    
+
     moodOptions: [
       { value: 'very_happy', icon: '😄' },
       { value: 'happy', icon: '😊' },
@@ -55,7 +55,7 @@ Page({
       { value: 'sad', icon: '😔' },
       { value: 'very_sad', icon: '😢' }
     ],
-    
+
     symptomOptions: [
       { value: 'cramps', label: '痛经', icon: '😣' },
       { value: 'headache', label: '头痛', icon: '🤕' },
@@ -67,7 +67,7 @@ Page({
       { value: 'back_pain', label: '腰痛', icon: '🦴' },
       { value: 'nausea', label: '恶心', icon: '🤢' }
     ],
-    
+
     // 经期数据
     periodData: {
       periods: [],
@@ -174,27 +174,27 @@ Page({
     const date = new Date(dateStr)
     const today = new Date()
     const { periodData } = this.data
-    
+
     // 检查是否是今天
     if (this.isSameDay(date, today)) {
       return 'today'
     }
-    
+
     // 检查是否是经期
     if (this.isPeriodDay(dateStr)) {
       return 'period'
     }
-    
+
     // 检查是否是排卵期
     if (this.isOvulationDay(dateStr)) {
       return 'ovulation'
     }
-    
+
     // 检查是否是预测经期
     if (this.isPredictedPeriodDay(dateStr)) {
       return 'predicted'
     }
-    
+
     return ''
   },
 
@@ -208,6 +208,9 @@ Page({
   // 判断是否是经期
   isPeriodDay(dateStr: string): boolean {
     const { periodData } = this.data
+    if (!periodData || !periodData.periods || !Array.isArray(periodData.periods)) {
+      return false
+    }
     return periodData.periods.some((period: any) => {
       const startDate = new Date(period.startDate)
       const endDate = new Date(period.endDate)
@@ -220,12 +223,12 @@ Page({
   isOvulationDay(dateStr: string): boolean {
     // 简单的排卵期计算：经期开始后14天左右
     const { periodData } = this.data
-    if (!periodData.lastPeriod) return false
-    
+    if (!periodData || !periodData.lastPeriod) return false
+
     const lastPeriodDate = new Date(periodData.lastPeriod)
     const ovulationDate = new Date(lastPeriodDate.getTime() + 14 * 24 * 60 * 60 * 1000)
     const currentDate = new Date(dateStr)
-    
+
     // 排卵期前后2天
     const diffDays = Math.abs((currentDate.getTime() - ovulationDate.getTime()) / (24 * 60 * 60 * 1000))
     return diffDays <= 2
@@ -234,37 +237,40 @@ Page({
   // 判断是否是预测经期
   isPredictedPeriodDay(dateStr: string): boolean {
     const { periodData } = this.data
-    if (!periodData.lastPeriod) return false
-    
+    if (!periodData || !periodData.lastPeriod || !periodData.cycleLength || !periodData.periodLength) return false
+
     const lastPeriodDate = new Date(periodData.lastPeriod)
     const nextPeriodDate = new Date(lastPeriodDate.getTime() + periodData.cycleLength * 24 * 60 * 60 * 1000)
     const currentDate = new Date(dateStr)
-    
+
     // 预测经期持续时间
     const periodEndDate = new Date(nextPeriodDate.getTime() + (periodData.periodLength - 1) * 24 * 60 * 60 * 1000)
-    
+
     return currentDate >= nextPeriodDate && currentDate <= periodEndDate
   },
 
   // 加载经期数据
   loadPeriodData() {
     try {
-      const periodData = wx.getStorageSync('periodData') || {
-        periods: [],
-        symptoms: [],
-        lastPeriod: null,
-        cycleLength: 28,
-        periodLength: 5
+
+      const storedData = wx.getStorageSync('periodData') || {}
+
+      // 确保所有必要的字段都存在
+      const periodData = {
+        periods: Array.isArray(storedData.periods) ? storedData.periods : [],
+        symptoms: Array.isArray(storedData.symptoms) ? storedData.symptoms : [],
+        lastPeriod: storedData.lastPeriod || null,
+        cycleLength: storedData.cycleLength || 28,
+        periodLength: storedData.periodLength || 5
       }
-      
+
       this.setData({
         periodData: periodData,
         averageCycle: periodData.cycleLength,
         averagePeriod: periodData.periodLength
       })
-      
+
       this.updatePeriodInfo()
-      this.generateCalendar() // 重新生成日历以应用经期标记
     } catch (error) {
       console.error('加载经期数据失败:', error)
     }
@@ -278,19 +284,19 @@ Page({
   // 更新经期信息
   updatePeriodInfo() {
     const { periodData } = this.data
-    
-    if (periodData.lastPeriod) {
+
+    if (periodData && periodData.lastPeriod && periodData.cycleLength && periodData.periodLength) {
       const lastPeriod = new Date(periodData.lastPeriod)
       const nextPeriod = new Date(lastPeriod.getTime() + periodData.cycleLength * 24 * 60 * 60 * 1000)
       const now = new Date()
-      
+
       // 计算距离下次经期的天数
       const daysToNext = Math.ceil((nextPeriod.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
-      
+
       // 计算排卵期
       const ovulationStart = new Date(lastPeriod.getTime() + 12 * 24 * 60 * 60 * 1000)
       const ovulationEnd = new Date(lastPeriod.getTime() + 16 * 24 * 60 * 60 * 1000)
-      
+
       this.setData({
         daysToNext: Math.max(0, daysToNext),
         lastPeriodText: this.formatDateRange(periodData.lastPeriod, periodData.lastPeriod),
@@ -321,6 +327,7 @@ Page({
       currentMonth = 12
       currentYear--
     }
+
     this.setData({
       currentYear,
       currentMonth
@@ -336,6 +343,7 @@ Page({
       currentMonth = 1
       currentYear++
     }
+
     this.setData({
       currentYear,
       currentMonth
